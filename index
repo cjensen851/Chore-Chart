@@ -30,4 +30,119 @@
     th, td {
       border: 1px solid #ccc;
       padding: 10px;
-      text-a
+      text-align: center;
+    }
+
+    th {
+      background: #f0f0f0;
+      font-family: 'Shadows Into Light', cursive;
+      font-size: 1.2em;
+    }
+
+    .chore {
+      text-align: left;
+    }
+
+    .reset-btn {
+      margin: 20px auto;
+      display: block;
+      background-color: #ff6666;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    .checkbox-cell {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Weekly Chore Chart</h1>
+  <button class="reset-btn" onclick="resetChart()">Reset Week</button>
+
+  <table id="choreChart">
+    <thead>
+      <tr>
+        <th class="chore">Chore</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- Dynamically generated rows -->
+    </tbody>
+  </table>
+
+  <script>
+    const chores = [
+      "Toilet",
+      "Sinks",
+      "Clean Room",
+      "Laundry",
+      "Vacuum",
+      "Feed Dog",
+      "Yard Help",
+      "Mom and Dad Request",
+      "Dishes",
+    ];
+
+    const kids = ["Peter", "Lane"];
+
+    function createTable() {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+
+      chores.forEach(chore => {
+        kids.forEach((kid, kidIndex) => {
+          const row = document.createElement("tr");
+
+          const choreCell = document.createElement("td");
+          choreCell.classList.add("chore");
+          choreCell.innerText = `${chore} - ${kid}`;
+          row.appendChild(choreCell);
+
+          for (let i = 0; i < 7; i++) {
+            const td = document.createElement("td");
+            td.classList.add("checkbox-cell");
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.dataset.key = `${chore}-${kid}-${i}`;
+
+            // Load from localStorage
+            checkbox.checked = localStorage.getItem(checkbox.dataset.key) === "true";
+
+            checkbox.addEventListener("change", () => {
+              localStorage.setItem(checkbox.dataset.key, checkbox.checked);
+            });
+
+            td.appendChild(checkbox);
+            row.appendChild(td);
+          }
+
+          tbody.appendChild(row);
+        });
+      });
+    }
+
+    function resetChart() {
+      if (confirm("Are you sure you want to reset the chart?")) {
+        localStorage.clear();
+        createTable();
+      }
+    }
+
+    createTable();
+  </script>
+</body>
+</html>
