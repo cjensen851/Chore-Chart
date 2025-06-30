@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background: #f9f9f9;
+      background: transparent;
       padding: 20px;
       margin: 0;
     }
@@ -18,12 +18,13 @@
       font-size: 2.5em;
       text-align: center;
       margin-bottom: 1em;
+      color: #333;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background: white;
+      background: rgba(255, 255, 255, 0.8); /* semi-transparent white background */
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
@@ -34,9 +35,10 @@
     }
 
     th {
-      background: #f0f0f0;
+      background: rgba(240, 240, 240, 0.8);
       font-family: 'Shadows Into Light', cursive;
       font-size: 1.2em;
+      color: #444;
     }
 
     .chore {
@@ -56,6 +58,11 @@
     }
 
     .checkbox-cell {
+      cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.3);
       cursor: pointer;
     }
   </style>
@@ -79,7 +86,7 @@
       </tr>
     </thead>
     <tbody id="tableBody">
-      <!-- Dynamically generated rows -->
+      <!-- Rows will be inserted here -->
     </tbody>
   </table>
 
@@ -93,7 +100,7 @@
       "Feed Dog",
       "Yard Help",
       "Mom and Dad Request",
-      "Dishes",
+      "Dishes"
     ];
 
     const kids = ["Peter", "Lane"];
@@ -103,7 +110,7 @@
       tbody.innerHTML = "";
 
       chores.forEach(chore => {
-        kids.forEach((kid, kidIndex) => {
+        kids.forEach((kid) => {
           const row = document.createElement("tr");
 
           const choreCell = document.createElement("td");
@@ -119,7 +126,6 @@
             checkbox.type = "checkbox";
             checkbox.dataset.key = `${chore}-${kid}-${i}`;
 
-            // Load from localStorage
             checkbox.checked = localStorage.getItem(checkbox.dataset.key) === "true";
 
             checkbox.addEventListener("change", () => {
