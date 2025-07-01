@@ -117,12 +117,6 @@
     tbody tr:nth-child(even) {
       background-color: rgba(255, 255, 255, 0.1);
     }
-
-    tfoot td {
-      font-weight: bold;
-      background: rgba(255, 255, 255, 0.5);
-      font-size: 1em;
-    }
   </style>
 </head>
 <body>
@@ -145,7 +139,6 @@
             </tr>
           </thead>
           <tbody id="peterTable"></tbody>
-          
         </table>
       </div>
     </div>
@@ -167,7 +160,6 @@
             </tr>
           </thead>
           <tbody id="laneTable"></tbody>
-          
         </table>
       </div>
     </div>
@@ -187,13 +179,9 @@
       "Yard Help": "🌿", "Mom and Dad Request": "🧡", "Dishes": "🍽️"
     };
 
-    function createTable(kid, containerId, progressId) {
+    function createTable(kid, containerId) {
       const tbody = document.getElementById(containerId);
-      const progressText = document.getElementById(progressId);
       tbody.innerHTML = "";
-
-      let total = 0;
-      let completed = 0;
 
       for (const chore of chores) {
         const row = document.createElement("tr");
@@ -212,12 +200,8 @@
           checkbox.dataset.key = key;
           checkbox.checked = localStorage.getItem(key) === "true";
 
-          if (checkbox.checked) completed++;
-          total++;
-
           checkbox.addEventListener("change", () => {
             localStorage.setItem(key, checkbox.checked);
-            
           });
 
           td.appendChild(checkbox);
@@ -226,30 +210,18 @@
 
         tbody.appendChild(row);
       }
-
-      
-    }
-
-    function updateProgress() { /* removed */ }
-      const checkboxes = document.querySelectorAll(`input[data-key*="${kid}"]`);
-      let total = checkboxes.length;
-      let completed = 0;
-      checkboxes.forEach(cb => {
-        if (cb.checked) completed++;
-      });
-      document.getElementById(progressId).textContent = `Progress: ${completed}/${total}`;
     }
 
     function resetChart() {
       if (confirm("Are you sure you want to reset the chart?")) {
         localStorage.clear();
-        createTable("Peter", "peterTable", "peterProgress");
-        createTable("Lane", "laneTable", "laneProgress");
+        createTable("Peter", "peterTable");
+        createTable("Lane", "laneTable");
       }
     }
 
-    createTable("Peter", "peterTable", "peterProgress");
-    createTable("Lane", "laneTable", "laneProgress");
+    createTable("Peter", "peterTable");
+    createTable("Lane", "laneTable");
   </script>
 </body>
 </html>
