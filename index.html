@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chore Chart</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Shadows+Into+Light&display=swap" rel="stylesheet">
-
   <style>
     html, body {
       margin: 0;
@@ -22,14 +21,12 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 0;
       overflow: hidden;
     }
 
     .table-container {
       flex: 1;
       overflow: auto;
-      padding: 0;
       margin: 0;
     }
 
@@ -93,6 +90,13 @@
       font-size: 1em;
       cursor: pointer;
     }
+
+    .total-display {
+      text-align: right;
+      padding: 0.5em;
+      font-size: 1.1em;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -116,6 +120,7 @@
           <tbody id="peterTable"></tbody>
         </table>
       </div>
+      <div class="total-display" id="peterTotal">$0.00</div>
     </div>
 
     <div class="table-container lane">
@@ -137,6 +142,7 @@
           <tbody id="laneTable"></tbody>
         </table>
       </div>
+      <div class="total-display" id="laneTotal">$0.00</div>
     </div>
 
     <button class="reset-btn" onclick="resetChart()">Reset Week</button>
@@ -144,9 +150,15 @@
 
   <script>
     const chores = [
-      "Toilet .50", "Sinks .50", "Clean Room .50", "Laundry .50", "Vacuum $1",
-      "Feed Dog .25", "Yard Help $1", "Mom and Dad Request .50", "Dishes .25"
+      "Toilet", "Sinks", "Clean Room", "Laundry", "Vacuum",
+      "Feed Dog", "Yard Help", "Mom and Dad Request", "Dishes"
     ];
+
+    const choreValues = {
+      "Toilet": 0.5, "Sinks": 0.5, "Clean Room": 1,
+      "Laundry": 1, "Vacuum": 0.75, "Feed Dog": 0.25,
+      "Yard Help": 1, "Mom and Dad Request": 1, "Dishes": 0.5
+    };
 
     const choreEmojis = {
       "Toilet": "🚽", "Sinks": "🚰", "Clean Room": "🛏️",
@@ -154,7 +166,7 @@
       "Yard Help": "🌿", "Mom and Dad Request": "🧡", "Dishes": "🍽️"
     };
 
-    function createTable(kid, containerId) {
+    function createTable(kid, containerId, totalId) {
       const tbody = document.getElementById(containerId);
       tbody.innerHTML = "";
 
@@ -173,10 +185,12 @@
           checkbox.type = "checkbox";
           const key = `${chore}-${kid}-${day}`;
           checkbox.dataset.key = key;
+          checkbox.dataset.value = choreValues[chore];
           checkbox.checked = localStorage.getItem(key) === "true";
 
           checkbox.addEventListener("change", () => {
             localStorage.setItem(key, checkbox.checked);
+            updateTotal(containerId, totalId);
           });
 
           td.appendChild(checkbox);
@@ -185,18 +199,31 @@
 
         tbody.appendChild(row);
       }
+
+      updateTotal(containerId, totalId);
+    }
+
+    function updateTotal(containerId, totalId) {
+      const checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]`);
+      let total = 0;
+      checkboxes.forEach(cb => {
+        if (cb.checked) {
+          total += parseFloat(cb.dataset.value || 0);
+        }
+      });
+      document.getElementById(totalId).textContent = `$${total.toFixed(2)}`;
     }
 
     function resetChart() {
       if (confirm("Are you sure you want to reset the chart?")) {
         localStorage.clear();
-        createTable("Peter", "peterTable");
-        createTable("Lane", "laneTable");
+        createTable("Peter", "peterTable", "peterTotal");
+        createTable("Lane", "laneTable", "laneTotal");
       }
     }
 
-    createTable("Peter", "peterTable");
-    createTable("Lane", "laneTable");
+    createTable("Peter", "peterTable", "peterTotal");
+    createTable("Lane", "laneTable", "laneTotal");
   </script>
 </body>
 </html>
